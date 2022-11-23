@@ -1,5 +1,7 @@
 package fr.lernejo.chat;
 
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,22 +11,31 @@ import java.util.Scanner;
 
 @SpringBootApplication
 public class Launcher {
+
     public static void main(String[] args) {
+
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Launcher.class);
         Launcher launcher = ctx.getBean(Launcher.class);
-        System.out.println(launcher);
+        SpringApplication.run(launcher.getClass(), args);
 
-        RabbitTemplate rabbitTemplate = new RabbitTemplate();
+        ConnectionFactory connectionFactory = new CachingConnectionFactory();
+
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+
+        String outputMessage = "Input a message, we will sent it for you (q for quit)";
+        System.out.println(outputMessage);
+
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Input a message, we will sent it for you (q for quit)");
+
         while (true) {
-            String input = scanner.next();
+            String input = scanner.nextLine();
             if (input.equals("q")) {
                 System.out.println("Bye");
                 break;
             }
-//            rabbitTemplate.convertAndSend("", input);
+            rabbitTemplate.convertAndSend("chat_messages", input);
+            System.out.println("Message sent. " + outputMessage);
         }
     }
 }
