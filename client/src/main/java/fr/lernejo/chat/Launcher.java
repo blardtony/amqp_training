@@ -16,6 +16,7 @@ public class Launcher {
 
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Launcher.class);
         Launcher launcher = ctx.getBean(Launcher.class);
+
         SpringApplication.run(launcher.getClass(), args);
 
         ConnectionFactory connectionFactory = new CachingConnectionFactory();
