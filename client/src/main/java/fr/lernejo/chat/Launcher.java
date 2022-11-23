@@ -15,18 +15,10 @@ public class Launcher {
     public static void main(String[] args) {
 
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Launcher.class);
-        Launcher launcher = ctx.getBean(Launcher.class);
-
-        SpringApplication.run(launcher.getClass(), args);
-
-        ConnectionFactory connectionFactory = new CachingConnectionFactory();
-
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        RabbitTemplate rabbitTemplate  = ctx.getBean(RabbitTemplate.class);
 
         String outputMessage = "Input a message, we will sent it for you (q for quit)";
         System.out.println(outputMessage);
-
-
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
